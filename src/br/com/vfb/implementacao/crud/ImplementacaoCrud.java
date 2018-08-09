@@ -54,7 +54,7 @@ public class ImplementacaoCrud<T> implements InterfaceCrud<T>{
 
 	@Override
 	public void save(T obj) throws Exception {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
