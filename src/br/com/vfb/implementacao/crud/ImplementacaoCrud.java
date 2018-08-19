@@ -125,80 +125,89 @@ public class ImplementacaoCrud<T> implements InterfaceCrud<T> {
 		
 		List<T>  lista = new ArrayList<T>();
 		lista = sessionFactory.getCurrentSession().createQuery(s).list();
-		return null;
+		
+		return lista;
 	}
 
 	@Override
 	public void executeUpdateQueryDinamica(String hql) throws Exception {
-		// TODO Auto-generated method stub
-
+		validaSessionFactory();
+		sessionFactory.getCurrentSession().createQuery(hql).executeUpdate();
+		executeFlushSession();
 	}
 
 	@Override
 	public void executeUpdateSQLDinamica(String sql) throws Exception {
-		// TODO Auto-generated method stub
-
+		validaSessionFactory();
+		sessionFactory.getCurrentSession().createSQLQuery(sql).executeUpdate();
+		executeFlushSession();
 	}
 
 	@Override
 	public void clearSession() throws Exception {
-		// TODO Auto-generated method stub
+		sessionFactory.getCurrentSession().clear();
 
 	}
 
 	@Override
 	public void evict(T obj) throws Exception {
-		// TODO Auto-generated method stub
-
+		validaSessionFactory();
+		sessionFactory.getCurrentSession().evict(obj);
 	}
 
 	@Override
 	public Session getSession() throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		validaSessionFactory();
+		return sessionFactory.getCurrentSession();
 	}
 
 	@Override
 	public List<?> getListSQLDinamica(String sql) throws Exception {
-		// TODO Auto-generated method stub
+		validaSessionFactory();
+		List<T> lista = sessionFactory.getCurrentSession().createSQLQuery(sql).list();
 		return null;
 	}
 
 	@Override
 	public JdbcTemplate getJdbcTemplate() {
 		// TODO Auto-generated method stub
-		return null;
+		return jdbcTempImp;
 	}
 
 	@Override
 	public SimpleJdbcTemplate getSimpleJdbcTemplate() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return simpleJdbcImp;
 	}
 
 	@Override
 	public SimpleJdbcInsert getSimpleJdbcInsert() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return simpleJdbcInsert;
 	}
 
 	@Override
 	public Long totalRegistro(String table) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		StringBuilder sql = new StringBuilder();
+		sql.append("select count(1) from").append(table);
+		return jdbcTempImp.queryForLong(sql.toString());
 	}
 
 	@Override
 	public Query obterQuery(String query) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		validaSessionFactory();
+		Query queryReturn = (Query) sessionFactory.getCurrentSession().createQuery(query.toString());
+		return queryReturn;
 	}
 
 	@Override
-	public List<T> findByListQueryDinamica(String query, int inicioRegistro,
-			int MaximoResultado) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	public List<T> findByListQueryDinamica(String query, int inicioRegistro,int maximoResultado) throws Exception {
+		validaSessionFactory();
+		List<T> lista = new ArrayList<T>();
+		lista = sessionFactory.getCurrentSession().createQuery(query).setFirstResult(inicioRegistro)
+																	 .setMaxResults(maximoResultado)
+																	 .list();
+		return lista;
 	}
 
 	private void validaSessionFactory() {
@@ -227,4 +236,11 @@ public class ImplementacaoCrud<T> implements InterfaceCrud<T> {
 		sessionFactory.getCurrentSession().flush();
 	}
 
+	
+	public List<Object[]> getListaDinamica(String sql) throws Exception {
+		validaSessionFactory();
+		List<Object[]> lista = (List<Object[]>) sessionFactory.getCurrentSession().createSQLQuery(sql).list();
+		
+		return lista;
+	}
 }
