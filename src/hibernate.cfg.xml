@@ -17,5 +17,9 @@
         <property name="hibernate.show_sql">false</property>
         <property name="hibernate.format_sql">true</property>
         <property name="hibernate.generate_statistics">false</property>
+        
+        <mapping class=""/>
+        
+        <listener class="org.hibernate.envers.event.AuditEventListener"/>
     </session-factory>
 </hibernate-configuration>
